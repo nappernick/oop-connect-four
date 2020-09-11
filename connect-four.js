@@ -1,89 +1,50 @@
-/*******
-  * Visual representation of connect four board with nested arrays
-  *
+import GameState from './game.js'
+import UI from './ui.js'
 
-board = [
-    
-        [ 0, 1, 2, 3, 4, 5, 6], index 0
-        [ 0, 1, 2, 3, 4, 5, 6], index 1
-        [ 0, 1, 2, 3, 4, 5, 6], index 2
-        [ 0, 1, 2, 3, 4, 5, 6], index 3
-        [ 0, 1, 2, 3, 4, 5, 6], index 4
-        [ 0, 1, 2, 3, 4, 5, 6], index 5
-    ]
-
-/*******/
-
-class UI {
-  constructor(name, color) {
-    this.name = name;
-    this.color = color;
-  }
-  colorHover(GAMESTATE.CURRENTCOLOR) {
-      document.getElementById('click-targets') = CURRENTCOLOR === 'red' ? 'red' : 'black'
-  }
-  
-}
-
-class GameState {
-    constructor(
-        board = [
-        [ 0, 1, 2, 3, 4, 5, 6],
-        [ 0, 1, 2, 3, 4, 5, 6],
-        [ 0, 1, 2, 3, 4, 5, 6],
-        [ 0, 1, 2, 3, 4, 5, 6],
-        [ 0, 1, 2, 3, 4, 5, 6],
-        [ 0, 1, 2, 3, 4, 5, 6],
-        ], 
-        currentTurn = 'red') {
-        this.board = board
-        this.currentTurn = currentTurn
-    }
-    checkFull (yCoor) {
-      for (let i = 6; i > 0; i--){
-        let currRow = this.board[i][yCoor];
-        if (typeof currRow === 'number'){
-          return;
-        } else {
-          document.getElementById(`column-${yCoor}`).className = `click-target full`;
-        }
-      }
-    }
-    updateBoardCoor (yCoor) {
-      for (let i = 6; i > 0; i--){
-        let currRow = this.board[i][yCoor];
-        if (typeof currRow === 'number'){
-          this.board[i][yCoor] = this.currentTurn;
-          this.addDivColor(yCoor, i);
-          this.changeTurn();
-          i = 0;
-        }
-      }
-    }
-    addDivColor (yCoor, i) {
-      document.getElementById(`square-${i}-${yCoor}`).className = `token-square ${this.currentTurn}`
-    }
-    changeTurn () {
-      this.currentTurn = this.currentTurn === 'red' ? 'black' : 'red';
-    }
-}
-
-
-window.addEventListener('DOMContentLoaded', event =>{
-  document.body.addEventListener("click " (event) => {
-    const input1 = document.getElementById('player-1-name');
-    const input2 = document.getElementById('player-2-name');
+window.addEventListener('DOMContentLoaded', event => {
+  let game
+  let name1
+  let name2
+  let player1
+  let player2
+  document.getElementById('board-holder').className = 'is-invisible'
+  document.getElementById('form-holder').addEventListener('keyup', (event) => {
+    name1 = document.getElementById('player-1-name').value;
+    name2 = document.getElementById('player-2-name').value;
+    if (name1 !== '' && name2 !== '')
+      document.getElementById('new-game').removeAttribute('disabled')
+  })
+  document.body.addEventListener("click", (event) => {
     if (event.target.id === 'new-game') {
-      newGame(name1, name2) {
-        const player1 = new UI (name1, "red");
-        const player2 = new UI (name2, "black");
+      document.getElementById('player-1-name').value = ''
+      document.getElementById('player-2-name').value = ''
+      document.getElementById('board-holder').removeAttribute('class');
+
+
+
+      document.getElementById('game-name').innerHTML = `<h1><center>${name1.toUpperCase()} VS. ${name2.toUpperCase()}</center></h1>`
+      player1 = new UI(name1, "red");
+      player2 = new UI(name2, "black");
+      game = new GameState()
+      if (Math.floor(Math.random() * 10) % 2 === 0) { //RANDOMIZING THE FIRST PLAYER, RED OR BLACK
+        document.getElementById('click-targets').className = player1.color // sets the hover color
+      } else {
+        document.getElementById('click-targets').className = player2.color // sets the hover color
+      }
+      game.currentTurn = document.getElementById('click-targets').className
+    }
+    if (event.target.className === 'click-target') {
+      const yCoor = parseInt(event.target.id.split('').pop())
+      game.updateBoardCoor(yCoor, name1, name2)
+      if (game.winColor === player1.color) {
+        document.getElementById('game-name').innerHTML = `<h1><center>${player1.name.toUpperCase()} WINS! </center></h1>`
+        // document.getElementById('new-game').setAttribute('disabled')
+      } else if (game.winColor === player2.color) {
+        document.getElementById('game-name').innerHTML = `<h1><center>${player2.name.toUpperCase()} WINS! </center></h1>`
+        // document.getElementById('click-targets').setAttribute('disabled')
       }
     }
-    if (event.target.class === 'click-target') {
-        columnIndex = parseInt(event.target.id.split('').pop())
-        colorClick() {}
-    }
-})
+  })
 
 
 
