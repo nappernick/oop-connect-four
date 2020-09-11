@@ -14,7 +14,9 @@ window.addEventListener('DOMContentLoaded', event => {
     if (name1 !== '' && name2 !== '')
       document.getElementById('new-game').removeAttribute('disabled')
   })
-  document.body.addEventListener("click", (event) => {
+  document.body.addEventListener("click", clickStuff)
+
+    function clickStuff (event) {
     if (event.target.id === 'new-game') {
       document.getElementById('player-1-name').value = ''
       document.getElementById('player-2-name').value = ''
@@ -39,18 +41,13 @@ window.addEventListener('DOMContentLoaded', event => {
       if (game.winColor === player1.color) {
         document.getElementById('game-name').innerHTML = `<h1><center>${player1.name.toUpperCase()} WINS! </center></h1>`
         // document.getElementById('new-game').setAttribute('disabled')
+        document.body.removeEventListener("click", clickStuff)
       } else if (game.winColor === player2.color) {
         document.getElementById('game-name').innerHTML = `<h1><center>${player2.name.toUpperCase()} WINS! </center></h1>`
         // document.getElementById('click-targets').setAttribute('disabled')
+        document.body.removeEventListener("click", clickStuff)
       }
     }
-  })
-
-
-
-
-
-
-
+  }
 
 })

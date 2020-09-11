@@ -15,6 +15,7 @@ class GameState {
     }
     checkFull(yCoor) {
         let currRow = this.board[0][yCoor];
+        console.log (this.board);
         if (typeof currRow === 'string') {
             document.getElementById(`column-${yCoor}`).className = `click-target full`;
         }
@@ -28,22 +29,65 @@ class GameState {
     }
     tieCheck(name1, name2) {
         if (document.getElementsByClassName('click-target full').length === 7) {
-            document.getElementById('game-name').innerHTML = `<h1><center>${name1.toUpperCase()} TIES WITH ${name2.toUpperCase()}</center></h1>`
+            document.getElementById('game-name').innerHTML = `<h1><center>${name1.toUpperCase()} TIES WITH ${name2.toUpperCase()}</center></h1>`;
         }
     }
+    // columnWin() {
+    //     let count = 0;
+    //     for (let i = 6; i >= 0; i--) {
+    //         for (let j = 5; j >= 1; j--) {
+    //             let lowerEle = this.board[j][i];
+    //             let upperEle = this.board[j - 1][i]
+    //             if (lowerEle === upperEle && (typeof lowerEle === 'string')) {
+    //                 count++
+    //                 // console.log(count, 'and current element', this.board[j][i])
+    //                 if (count === 3){
+    //                     this.winColor = this.board[j][i]
+    //                 }
+    //                 // console.log('Win color', this.winColor)
+    //             } else {
+    //                 count = 0
+    //             }
+    //         }
+    //     }
+    // }
     columnWin() {
-        let count = 0;
-        for (let i = 6; i >= 0; i--) {
-            for (let j = 5; j >= 1; j--) {
-                let lowerEle = this.board[j][i];
-                let upperEle = this.board[j - 1][i]
-                if (lowerEle === upperEle && (typeof lowerEle === 'string')) {
-                    count++
-                    console.log(count, 'and current element', this.board[j][i])
-                    this.winColor = count === 3 ? this.board[j][i] : null
-                    console.log('Win color', this.winColor)
-                } else {
-                    count = 0
+        for (let i = 6; i >=0; i--){
+            for (let j = 2; j>=0; j--){
+                let first = this.board[j][i]
+                let second = this.board[j+1][i]
+                let third = this.board[j+2][i]
+                let fourth = this.board[j+3][i]
+                if (typeof first === 'string'){
+                    if (first === second && second === third && third === fourth){
+                        this.winColor = first;
+                    }
+                }
+            }
+        }
+    }
+    rowWin() {
+        for (let i = 5; i >=0; i--){
+            for (let j = 3; j>=0; j--){
+                let first = this.board[i][j]
+                let second = this.board[i][j+1]
+                let third = this.board[i][j+2]
+                let fourth = this.board[i][j+3]
+                if (first === second && second === third && third === fourth){
+                    this.winColor = first;
+                }
+            }
+        }
+    }
+    diagonalRightWin() {
+        for (let i = 2; i >=0; i--){
+            for (let j = 3; j>=0; j--){
+                let first = this.board[i][j]
+                let second = this.board[i+1][j+1]
+                let third = this.board[i+2][j+2]
+                let fourth = this.board[i+3][j+3]
+                if (first === second && second === third && third === fourth){
+                    this.winColor = first;
                 }
             }
         }
@@ -57,6 +101,8 @@ class GameState {
                 this.changeTurn();
                 this.checkFull(yCoor)
                 this.columnWin()
+                this.rowWin()
+                this.diagonalRightWin()
                 i = -1;
             }
         }
