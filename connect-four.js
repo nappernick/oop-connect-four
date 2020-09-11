@@ -1,5 +1,6 @@
 import GameState from './game.js'
 import UI from './ui.js'
+import * as TWEEN from '@tweenjs/tween.js'
 
 window.addEventListener('DOMContentLoaded', event => {
   let game
@@ -16,7 +17,7 @@ window.addEventListener('DOMContentLoaded', event => {
   })
   document.body.addEventListener("click", clickStuff)
 
-    function clickStuff (event) {
+  function clickStuff(event) {
     if (event.target.id === 'new-game') {
       document.getElementById('player-1-name').value = ''
       document.getElementById('player-2-name').value = ''
@@ -37,6 +38,14 @@ window.addEventListener('DOMContentLoaded', event => {
     }
     if (event.target.className === 'click-target') {
       const yCoor = parseInt(event.target.id.split('').pop())
+      depth = game.checkDepth(yCoor)
+      const token = document.createElement("div")
+      token.className = `token ${game.currentTurn}`
+      event.target.appendChild(token)
+      let tween = new TWEEN.Tween(token)
+      tween.to(depth, (depth / 75 * 250))
+      // token.className = `token `
+      event.target.removeChild(token)
       game.updateBoardCoor(yCoor, name1, name2)
       if (game.winColor === player1.color) {
         document.getElementById('game-name').innerHTML = `<h1><center>${player1.name.toUpperCase()} WINS! </center></h1>`
